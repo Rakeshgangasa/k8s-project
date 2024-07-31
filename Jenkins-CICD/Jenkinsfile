@@ -2,40 +2,40 @@ pipeline{
     agent any
     tools{
         jdk 'jdk17'
-        terraform 'terraform'
+       // terraform 'terraform'
     }
     stages{
-        stage('clean Workspace'){
+       /* stage('clean Workspace'){
             steps{
                 cleanWs()
             }
-        }
+        }*/
         stage('checkout from Git'){
             steps{
                 git branch: 'main', url: 'https://github.com/Aj7Ay/TERRAFORM-JENKINS-CICD.git'
             }
         }
-        stage('Terraform version'){
+        /*stage('Terraform version'){
              steps{
                  sh 'terraform --version'
                 }
-        }
+        }*/
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Terraform \
-                    -Dsonar.projectKey=Terraform '''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=jenkins \
+                    -Dsonar.projectKey=mysonar '''
                 }
             }
         }
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'mysonar' 
                 }
             } 
         }
-        stage('TRIVY FS SCAN') {
+      /*  stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
             }
@@ -59,6 +59,6 @@ pipeline{
             steps{
                 sh 'terraform ${action} --auto approve'
             }
-        }
+        }*/
     }
 }
